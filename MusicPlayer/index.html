@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <link rel="stylesheet" href="/icon/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.acwing.com/static/jquery/js/jquery-3.3.1.min.js"></script>
+    <title>MusicPlayer</title>
+</head>
+<body>
+    <div class="player-warp">
+        <div class="player-info"><!--信息卡片-->
+            <div class="info">
+                <div class="music_name"></div>
+                <div class="singer-album"></div>
+                <div class="music_progress"><!--进度条-->
+                    <div class="music_progress_top">
+                        <span class="current_time"></span>
+                        <span class="time"></span>
+                    </div>
+                    <div class="music_progress_bar">
+                        <div class="music_progress_line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="player-control"><!--音乐控制器-->
+            <div class="cover"><!--唱片封面-->
+                <img 
+                    src="" 
+                    alt="封面">
+            </div>
+            <div class="control"><!--控制器-->
+                <i class="fa fa-step-backward preBtn"></i>
+                <i class="fa fa-play playBtn"></i>
+                <i class="fa fa-step-forward nextBtn"></i>
+                <i class="fa fa-reorder list"></i>
+            </div>
+        </div>
+    </div>
+    <div class="mask_bg"><!--背景--></div>
+    <div class="modal"><!--模态框 列表-->
+        <div class="modal-box">
+            <div class="modal-box-top">
+                <div class="modal-tittle">音乐列表</div>
+                <div class="modal-close">
+                    <i class="fa fa-remove"></i>
+                </div>
+            </div>
+            <div class="modal-wrapper">
+                <ul class="music-list">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let musiclist = []; //保存音乐列表
+        let currentIndex = 0;//当前播放的歌曲序号，最开始是第0首歌
+        let sound = new Audio();
+
+        $.ajax({
+            type: "GET",
+            url: "./music.json",
+            dataType: "json",
+            success: function(data) {
+                musiclist = data;
+                render(musiclist[currentIndex]);
+                renderMusicList(musiclist);
+            }
+        });
+
+        function render(data) {//渲染对应标签的内容
+            $(".music_name").text(data.name);
+            $(".singer-album").text(`${data.singer} - ${data.album}`);
+            $(".time").text(data.time);
+            $(".cover img").attr("src", data.cover);
+            sound.src=data.audio_url;
+            $(".mask_bg").css({
+                background: `url("${data.cover}") no-repeat center center`,
+            });
+        }
+
+        //绑定事件
+        $(".playBtn").on("click", function(){//播放按钮
+            if(sound.paused){
+                $(this).removeClass("fa-play").addClass("fa-pause");
+                $(".player-info").animate({
+                    top: "-100%",
+                    opacity: 1,
+                }, 500);
+                $(".cover").css({
+                    "animation-play-state": 'running'
+                });
+                sound.play();
+            }
+            else{
+                $(this).removeClass("fa-pause").addClass("fa-play");
+                $(".player-info").animate({
+                    top: "0%",
+                    opacity: 0,
+                }, 400);
+                $(".cover").css({
+                    "animation-play-state": 'paused'
+                });
+                sound.pause();
+            }
+            renderMusicList(musiclist);
+        });
+
+        $(".preBtn").on("click", function() {
+            if(currentIndex>0){
+                currentIndex--;
+            }
+            else{
+                currentIndex = musiclist.length - 1;
+            }
+            render(musiclist[currentIndex]);
+            $(".playBtn").trigger("click");
+        });
+
+        $(".nextBtn").on("click", function(){
+            if(currentIndex<musiclist.length-1){
+                currentIndex++;
+            }
+            else {
+                currentIndex = 0;
+            }
+            render(musiclist[currentIndex]);
+            $(".playBtn").trigger("click");
+        });
+
+        sound.addEventListener("timeupdate", function() {//对象使用addEventListener添加监听事件
+            let currentTime = this.currentTime;
+            let duration = this.duration;
+            $(".current_time").text(formatTime(currentTime));
+            $(".music_progress_line").css({
+                width: (currentTime / duration) * 100 + "%"
+            });
+        });
+
+        function formatTime(time) {
+            let min = parseInt(time / 60);
+            let sec = parseInt(time % 60);
+            min = min < 10 ? "0" + min : min;
+            sec = sec < 10 ? "0" + sec : sec;
+            return `${min}:${sec}`;
+        }
+
+        $(".list").on("click", function() {
+            $(".modal").css({
+                display: "block"
+            });
+            renderMusicList(musiclist);
+        });
+
+        $(".modal-close").on("click", function() {
+            $(".modal").css({
+                display: "none"
+            });
+        });
+
+        function renderMusicList(list) {
+            $(".music-list").empty();
+            $.each(list,function(index, item) {
+                let $li = $(`
+                    <li class="${index == currentIndex ? 'playing' : ''}">
+                        <span>0${index + 1}. ${item.name} - ${item.singer}</span>
+                        <span data-index="${index}" class="fa ${index == currentIndex && (!sound.paused) ? 'fa-pause-circle' : 'fa-play-circle'} play-circle"></span>
+                    </li>
+                `);
+                $(".music-list").append($li);
+            });
+        }
+
+        $(".music-list").on("click", ".play-circle", function() {
+            if($(this).hasClass('fa-play-circle')){
+                currentIndex = $(this).attr("data-index");
+                render(musiclist[currentIndex]);
+                $(".playBtn").trigger("click");
+            }
+            else{
+                $(".playBtn").trigger("click");
+            }
+        });
+
+        sound.addEventListener("ended", function() {
+            $(".nextBtn").trigger("click");
+        });
+    </script>
+</body>
+</html>

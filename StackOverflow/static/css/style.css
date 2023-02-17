@@ -1,0 +1,84 @@
+.usercard {
+    width: 200px;
+    height: 67.69px;
+    background-color: #D9EAF7;
+    border-radius: 3px;
+    box-sizing: border-box;
+    padding: 5px 6px 7px 7px;
+}
+
+.usercard-head {
+    font-size: 12px;
+    color: #6A737C;
+    box-sizing: border-box;
+    margin: 1px 0 4px 0;
+}
+
+.useracrd-body-img img {
+    width: 32px;
+    height: 32px;
+    border-radius: 2px;
+}
+
+.usercard-body-info-username {
+    font-size: 13px;
+    color: #0074CC;
+}
+
+.useracrd-body-img {
+    float: left;
+}
+
+.usercard-body-info {
+    margin-left: 8px;
+    float: left;
+}
+
+.usercard-body-info-reputation {
+    height: 14px;
+    font-size: 12px;
+    color: #6A737C;
+    font-weight: bold;
+    line-height: 14px;
+    margin-right: 5px;
+    float: left;
+}
+
+.usercard-body-info-badges {
+    float: left;
+}
+
+.usercard-body-info-badges-count {
+    font-size: 12px;
+    color: #838C95;
+    line-height: 14px;
+    float: left;
+    margin-right: 5px;
+}
+
+.usercard-body-info-badges-gold {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin: 4px 3px 4px 2px;
+    background-color: #FFCC01;
+    float: left;
+}
+
+.usercard-body-info-badges-silver {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin: 4px 3px 4px 2px;
+    background-color: #B4B8BC;
+    float: left;
+}
+
+.usercard-body-info-badges-bronze {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin: 4px 3px 4px 2px;
+    background-color: #D1A684;
+    float: left;
+}
