@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/konva@4.0.0/konva.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <script src="https://cdn.acwing.com/static/jquery/js/jquery-3.3.1.min.js"></script>
+    <title>ProgressBar</title>
+</head>
+<body>
+    <div class="outer">
+        <div class="ProgressBar">
+            <div class="ProgressLine"></div>
+        </div>
+    </div>
+
+    <script>
+        let x = $('.ProgressBar').offset().left;
+        let m_x = x;
+
+        let sound = new Audio();
+        sound.src = "http://music.163.com/song/media/outer/url?id=437292796.mp3"
+        sound.play();
+
+        $('.ProgressBar').click(function(e){
+            let m_x = e.pageX;
+            let len = m_x - x;
+            $('.ProgressLine').animate({
+                width: `${len}px`,
+            }, 150);
+
+            let duration = sound.duration;
+            sound.currentTime = len / 300 * duration;
+        });
+
+    </script>
+</body>
+</html>
