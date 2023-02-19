@@ -40,5 +40,58 @@
 
 使用jquery获取到进度条的初始位置x坐标，将进度条绑定鼠标点击事件，获取到鼠标的x坐标，与初始位置x坐标求差可得进度条宽度，再使用animate控制css实现进度条的变化。
 
+已知Bug：
+
+* 在获取元素位置信息时，由于移动或者flex布局的影响，会导致定位不准
+* 在计算进度条百分比时，如果使用绝对数值，会导致在窗口大小改变后无法正确获取数值，导致显示出错。
+
 ![](https://picbed-1312285733.cos.ap-beijing.myqcloud.com/cover/202302181709054.webp)
+
+```css
+* {
+    margin: 0;
+}
+
+.outer {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ProgressBar {
+    width: 300px;
+    height: 10px;
+    border-radius: 5px;
+    color: white;
+    backdrop-filter: blur(8px);
+    background-color: rgba(10, 175, 230, 0.112);
+    border-right: 3px rgba(40, 40, 40, 0.35) solid;
+    transition: all .5s;
+}
+
+.ProgressBar:hover {
+    box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+}
+
+.ProgressLine {
+    width: 0px;
+    height: 10px;
+    background-color: rgba(44, 43, 49, 0.7);
+    border-radius: 5px;
+}
+```
+
+## 音乐播放器2.0
+
+相对于之前的播放器更改了界面样式，原有的功能逻辑不变。增加了可控进度条，音量调节条。单击声音按钮调出音量条，再次点击关闭。
+
+已知Bug：由于进度条使用相对值进行设置，所以在改变窗口大小后功能依然正常，但是音量条使用了绝对高度值，所以会出现改变窗口大小后取值错误，出现负值，进而导致无法正确设置声音。
+
+![](https://picbed-1312285733.cos.ap-beijing.myqcloud.com/cover/202302191817296.webp)
+
+![](https://picbed-1312285733.cos.ap-beijing.myqcloud.com/cover/202302191817369.webp)
+
+![](https://picbed-1312285733.cos.ap-beijing.myqcloud.com/cover/202302191816767.webp)
 

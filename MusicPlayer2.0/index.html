@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/icon/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.acwing.com/static/jquery/js/jquery-3.3.1.min.js"></script>
+    <title>MusicPlayer</title>
+</head>
+<body>
+    <div class="sidebar"></div>
+    <div class="player">
+        <div class="operation">
+            <div class="top">
+                <div class="name"></div>
+                <div class="info"></div>
+            </div>
+            <div class="middle">
+                <div class="control">
+                    <div class="likediv"><i class="fa fa-heart-o like"></i></div><!--fa-heart是实心的-->
+                    <div class="circlediv"><i class="fa fa-retweet"></i></div><!--fa-random-->
+                    <div class="listdiv"><i class="fa fa-list list"></i></div>
+                    <div class="sounddiv"><i class="fa fa-volume-up sound"></i></div>
+                    <div class="soundBar">
+                        <div class="soundLine"></div>
+                    </div>
+                </div>
+                <div class="progressBar-outer">
+                    <span class="current">00:00</span>
+                    <div class="progressBar">
+                        <div class="progressLine">
+                        </div>
+                    </div>
+                    <span class="time"></span>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="preBtn Btn">
+                    <i class="fa fa-step-backward"></i>
+                </div>
+                <div class="playBtn Btn">
+                    <i class="fa fa-play"></i>
+                </div>
+                <div class="nextBtn Btn">
+                    <i class="fa fa-step-forward"></i>
+                </div>
+            </div>
+        </div>
+        <div class="cover">
+            <img src="" alt="">
+        </div>
+    </div>
+    <div class="bg"></div>
+    <div class="modal"><!--模态框 列表-->
+        <div class="modal-box">
+            <div class="modal-box-top">
+                <div class="modal-tittle">音乐列表</div>
+                <div class="modal-close">
+                    <i class="fa fa-remove"></i>
+                </div>
+            </div>
+            <div class="modal-wrapper">
+                <ul class="music-list">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let musiclist = [];
+        let sound = new Audio();
+        let currentIndex = 0;
+
+        let x = $(".progressBar").offset().left;
+        let sound_y = $(".soundBar").offset().top;
+
+        $(".soundBar").hide();
+
+        //读取音乐信息
+        $.ajax({
+            type: "GET",
+            url: "./music.json",
+            dataType: "json",
+            success: function (data) {
+                musiclist = data;
+                render(musiclist[currentIndex]);
+                renderMusicList(musiclist);
+            }
+        });
+
+        //渲染信息
+        function render(data) {
+            $(".name").text(data.name);
+            $(".info").text(`${data.singer} - ${data.album}`);
+            $(".time").text(data.time);
+            $(".cover img").attr("src", data.cover);
+            sound.src = data.audio_url;
+            $(".bg").css({
+                background: `url("${data.cover}")`
+            });
+        }
+
+        //绑定按钮
+        $(".playBtn").on("click", function() {
+            if (sound.paused){
+                $(".playBtn i").removeClass("fa-play").addClass("fa-pause");
+                $(".cover").css({
+                    "animation-play-state": 'running'
+                });
+                sound.play();
+            }
+            else {
+                $(".playBtn i").removeClass("fa-pause").addClass("fa-play");
+                $(".cover").css({
+                    "animation-play-state": 'paused'
+                });
+                sound.pause();
+            }
+            renderMusicList(musiclist);
+        });
+
+        $(".preBtn").on("click", function() {
+            if(currentIndex > 0){
+                currentIndex --;
+            }
+            else{
+                currentIndex = musiclist.length - 1;
+            }
+
+            render(musiclist[currentIndex]);
+            $(".playBtn").trigger("click");
+        });
+
+        //音乐列表
+        $(".nextBtn").on("click", function () {
+            if (currentIndex < musiclist.length - 1) {
+                currentIndex++;
+            }
+            else {
+                currentIndex = 0;
+            }
+            render(musiclist[currentIndex]);
+            $(".playBtn").trigger("click");
+        });
+
+        $(".list").on("click", function() {
+            $(".modal").css({
+                display: "block"
+            });
+            renderMusicList(musiclist);
+        });
+
+        $(".modal-close").on("click", function() {
+            $(".modal").css({
+                display: "none"
+            });
+        });
+
+        function renderMusicList(list) {
+            $(".music-list").empty();
+            $.each(list,function(index, item) {
+                let $li = $(`
+                    <li class="${index == currentIndex ? 'playing' : ''}">
+                        <span>0${index + 1}. ${item.name} - ${item.singer}</span>
+                        <span data-index="${index}" class="fa ${index == currentIndex && (!sound.paused) ? 'fa-pause-circle' : 'fa-play-circle'} play-circle"></span>
+                    </li>
+                `);
+                $(".music-list").append($li);
+            });
+        }
+
+        //进度条
+        function formatTime(time) {
+            let min = parseInt(time / 60);
+            let sec = parseInt(time % 60);
+            min = min < 10 ? "0" + min : min;
+            sec = sec < 10 ? "0" + sec : sec;
+            return `${min}:${sec}`;
+        }
+
+        sound.addEventListener("timeupdate", function() {//对象使用addEventListener添加监听事件
+            let currentTime = this.currentTime;
+            let duration = this.duration;
+            $(".current").text(formatTime(currentTime));
+            $(".progressLine").css({
+                width: (currentTime / duration) * 100 + "%"
+            });
+        });
+
+        $('.progressBar').click(function(e){
+            let m_x = e.pageX;
+            let len = m_x - x;
+            $('.progressLine').animate({
+                width: `${len}px`,
+            }, 150);
+
+            let duration = sound.duration;
+            sound.currentTime = len / $(this).width() * duration;
+        });
+
+        $(".music-list").on("click", ".play-circle", function() {
+            if($(this).hasClass('fa-play-circle')){
+                currentIndex = $(this).attr("data-index");
+                render(musiclist[currentIndex]);
+                $(".playBtn").trigger("click");
+            }
+            else{
+                $(".playBtn").trigger("click");
+            }
+        });
+
+        sound.addEventListener("ended", function() {
+            $(".nextBtn").trigger("click");
+        });
+
+        //监听窗口大小变化，重新计算进度条初始位置
+        $(window).resize(function() {
+            x = $('.progressBar').offset().left;
+            sound_y = $(".soundBar").offset().top;
+        });
+
+        //音量按钮
+        let flag = false;
+
+        $(".sound").on("click", function() {
+            if(flag){
+                $(".soundBar").fadeOut();
+                flag = !flag;
+            }
+            else{
+                $(".soundBar").fadeIn();
+                flag = !flag;
+            }
+        });
+
+        $(".soundBar").click(function(e) {
+            let m_y = e.pageY - sound_y;
+            let h = $(".soundBar").height();
+            let len = h - m_y;
+            $(".soundLine").animate({
+                height: `${len}px`
+            });
+            sound.volume = len / h;
+        });
+
+    </script>
+</body>
+</html>

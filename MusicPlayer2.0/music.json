@@ -1,0 +1,46 @@
+[
+    {
+        "name": "Rain",
+        "audio_url": "http://music.163.com/song/media/outer/url?id=1950516520.mp3",
+        "singer": "秦基博",
+        "album": "言の葉の庭",
+        "cover": "http://p2.music.126.net/1vNRZi6JhHzcyV95MF43CQ==/109951167969895471.jpg",
+        "time": "04:53"
+    },
+
+    {
+        "name": "心海",
+        "audio_url": "http://music.163.com/song/media/outer/url?id=1500883818.mp3",
+        "singer": "Eve",
+        "album": "心海",
+        "cover": "http://p2.music.126.net/J01E-CRNs3lhr8JW17eXOA==/109951165515159262.jpg",
+        "time": "04:26"
+    },
+    
+    {
+        "name": "trust you",
+        "audio_url": "http://music.163.com/song/media/outer/url?id=566112.mp3",
+        "singer": "伊藤由奈",
+        "album": "trust you",
+        "cover": "http://p1.music.126.net/apZ1qzA9kwofzhSEoLaUog==/109951165988948171.jpg",
+        "time": "05:21"
+    },
+
+    {
+        "name": "Summer Ghost",
+        "audio_url": "http://music.163.com/song/media/outer/url?id=1930226368.mp3",
+        "singer": "小瀬村晶",
+        "album": "Summer Ghost",
+        "cover": "http://p1.music.126.net/LnBAm-rE8kDdyaIUBbJ5-A==/109951167177880386.jpg",
+        "time": "02:16"
+    },
+
+    {
+        "name": "The last rain",
+        "audio_url": "http://music.163.com/song/media/outer/url?id=437292796.mp3",
+        "singer": "Uru",
+        "album": "The last rain",
+        "cover": "http://p1.music.126.net/hAwnG-CCgo1UQY9W4bzkbQ==/109951165050354394.jpg",
+        "time": "05:19"
+    }
+]
