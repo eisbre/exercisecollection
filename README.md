@@ -47,41 +47,7 @@
 
 ![](https://picbed-1312285733.cos.ap-beijing.myqcloud.com/cover/202302181709054.webp)
 
-```css
-* {
-    margin: 0;
-}
 
-.outer {
-    width: 400px;
-    height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.ProgressBar {
-    width: 300px;
-    height: 10px;
-    border-radius: 5px;
-    color: white;
-    backdrop-filter: blur(8px);
-    background-color: rgba(10, 175, 230, 0.112);
-    border-right: 3px rgba(40, 40, 40, 0.35) solid;
-    transition: all .5s;
-}
-
-.ProgressBar:hover {
-    box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
-}
-
-.ProgressLine {
-    width: 0px;
-    height: 10px;
-    background-color: rgba(44, 43, 49, 0.7);
-    border-radius: 5px;
-}
-```
 
 ## 音乐播放器2.0
 
